@@ -1,6 +1,6 @@
 import 'dart:io';
 
-main() {
+void main() {
   int jumlahPemain = int.parse(stdin.readLineSync()!);
 
   List<int> skorPemain = stdin
@@ -8,6 +8,7 @@ main() {
       .split(' ')
       .map((skor) => int.parse(skor))
       .toList();
+
   int jumlahGameGits = int.parse(stdin.readLineSync()!);
 
   List<int> skorGits = stdin
@@ -26,7 +27,7 @@ main() {
   print(hasil.join(' '));
 }
 
-denseRanking(
+List<int> denseRanking(
   List<int> skorPemain,
   int jumlahPemain,
   List<int> skorGits,
@@ -34,33 +35,14 @@ denseRanking(
 ) {
   List<int> leaderboardUnik = [];
 
-  int ukuranUnik = 0;
-
   for (int i = 0; i < jumlahPemain; i++) {
     int skorSekarang = skorPemain[i];
-
-    bool sudahAda = false;
-
-    for (int j = 0; j < ukuranUnik; j++) {
-      if (leaderboardUnik[j] == skorSekarang) {
-        sudahAda = true;
-        break;
-      }
-    }
-
-    if (!sudahAda) {
+    if (leaderboardUnik.isEmpty || leaderboardUnik.last != skorSekarang) {
       leaderboardUnik.add(skorSekarang);
-      ukuranUnik++;
-
-      int k = ukuranUnik - 1;
-      while (k > 0 && leaderboardUnik[k] > leaderboardUnik[k - 1]) {
-        int temp = leaderboardUnik[k];
-        leaderboardUnik[k] = leaderboardUnik[k - 1];
-        leaderboardUnik[k - 1] = temp;
-        k--;
-      }
     }
   }
+
+  int ukuranUnik = leaderboardUnik.length;
 
   List<int> hasilRanking = [];
 

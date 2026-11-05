@@ -1,8 +1,7 @@
 import 'dart:io';
-// Import file soal lainnya
 import 'soal_1.dart' as soal1;
-// import 'soal_2.dart' as soal2;
-// import 'soal_3.dart' as soal3;
+import 'soal_2.dart' as soal2;
+import 'soal_3.dart' as soal3;
 
 void main() {
   print('=== APLIKASI TES KERJA GITS INDONESIA ===');
@@ -11,15 +10,13 @@ void main() {
 
   switch (pilihan) {
     case '1':
-      soal1.main(); // Memanggil fungsi main milik soal_1
+      soal1.main();
       break;
     case '2':
-      // soal2.main();
-      print('Soal 2 belum diimplementasikan.');
+      soal2.main();
       break;
     case '3':
-      // soal3.main();
-      print('Soal 3 belum diimplementasikan.');
+      soal3.main();
       break;
     default:
       print('Pilihan tidak valid!');
