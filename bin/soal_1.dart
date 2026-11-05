@@ -1,7 +1,6 @@
 import 'dart:io';
 
 main() {
-  stdout.write('Masukkan angka: ');
   int n = int.parse(stdin.readLineSync()!);
   generateDeretA000124(n);
 }
