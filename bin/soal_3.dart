@@ -1,44 +1,58 @@
 import 'dart:io';
 
 void main() {
-  String rawInputNumber = stdin.readLineSync()!;
-  String s = clean(rawInputNumber, 'string: ');
+  // baca input string dan kuota ubah
+  String rawString = stdin.readLineSync()!;
+  String stringAngka = clean(rawString, 'string: ');
 
-  String rawInputKuota = stdin.readLineSync()!;
-  int k = int.parse(clean(rawInputKuota, 'k: '));
+  String rawKuota = stdin.readLineSync()!;
+  int kuota = int.parse(clean(rawKuota, 'k: '));
 
-  String hasil = highestPalindrome(s, k);
-  print(hasil);
+  print(highestPalindrome(stringAngka, kuota));
 }
 
-String highestPalindrome(String s, int k) {
-  if (k < 0 || s.isEmpty) return "-1";
+// fungsi utama cari highest palindrome
+String highestPalindrome(String stringAngka, int kuota) {
+  if (kuota < 0 || stringAngka.isEmpty) return "-1";
 
-  List<String> chars = s.split('');
+  List<String> chars = stringAngka.split('');
+
+  // pastikan semua karakter adalah angka
   if (!isNumeric(chars, 0)) return "-1";
 
-  int n = chars.length;
-  List<bool> isChanged = List<bool>.filled(n, false);
+  int panjang = chars.length;
+  List<bool> isChanged = List<bool>.filled(panjang, false);
 
-  int sisaKuota = palindrome(chars, isChanged, 0, n - 1, k);
+  // bikin palindrom dulu dengan ubahan minimal
+  int sisaKuota = palindrome(chars, isChanged, 0, panjang - 1, kuota);
   if (sisaKuota < 0) return "-1";
 
-  nilaiTertinggi(chars, isChanged, 0, n - 1, sisaKuota);
+  // pakai sisa kuota buat maksimalkan angka ke 9 dari luar
+  nilaiTertinggi(chars, isChanged, 0, panjang - 1, sisaKuota);
 
   return chars.join('');
 }
 
+// rekursif cek apakah semua karakter digit 0-9
+bool isNumeric(List<String> chars, int index) {
+  if (index >= chars.length) return true;
+  int code = chars[index].codeUnitAt(0);
+  if (code < 48 || code > 57) return false;
+  return isNumeric(chars, index + 1);
+}
+
+// samakan karakter kiri dan kanan
 int palindrome(
   List<String> chars,
   List<bool> isChanged,
   int left,
   int right,
-  int k,
+  int kuota,
 ) {
-  if (left >= right) return k;
+  if (left >= right) return kuota;
 
   if (chars[left] != chars[right]) {
-    if (k <= 0) return -1;
+    if (kuota <= 0) return -1;
 
     if (chars[left].compareTo(chars[right]) > 0) {
       chars[right] = chars[left];
@@ -47,48 +61,45 @@ int palindrome(
       chars[left] = chars[right];
       isChanged[left] = true;
     }
-    k--;
+    kuota--;
   }
 
-  return palindrome(chars, isChanged, left + 1, right - 1, k);
+  return palindrome(chars, isChanged, left + 1, right - 1, kuota);
 }
 
+// maksimalkan digit ke '9'
 void nilaiTertinggi(
   List<String> chars,
   List<bool> isChanged,
   int left,
   int right,
-  int k,
+  int kuota,
 ) {
-  if (k <= 0 || left > right) return;
+  if (kuota <= 0 || left > right) return;
 
+  // digit tengah kalau panjang ganjil
   if (left == right) {
-    if (chars[left] != '9' && k >= 1) {
+    if (chars[left] != '9' && kuota >= 1) {
       chars[left] = '9';
     }
     return;
   }
 
   if (chars[left] != '9') {
+    // kalau salah satu udah pernah diubah, cukup butuh 1 kuota lagi
     int biaya = (isChanged[left] || isChanged[right]) ? 1 : 2;
 
-    if (k >= biaya) {
+    if (kuota >= biaya) {
       chars[left] = '9';
       chars[right] = '9';
-      k -= biaya;
+      kuota -= biaya;
     }
   }
 
-  nilaiTertinggi(chars, isChanged, left + 1, right - 1, k);
+  nilaiTertinggi(chars, isChanged, left + 1, right - 1, kuota);
 }
 
-bool isNumeric(List<String> chars, int index) {
-  if (index >= chars.length) return true;
-  int code = chars[index].codeUnitAt(0);
-  if (code < 48 || code > 57) return false;
-  return isNumeric(chars, index + 1);
-}
-
-String clean(String rawInput, String prefix) {
-  return rawInput.replaceFirst(prefix, '').trim();
+// bersihkan prefix kayak 'string: ' atau 'k: '
+String clean(String raw, String prefix) {
+  return raw.replaceFirst(prefix, '').trim();
 }
